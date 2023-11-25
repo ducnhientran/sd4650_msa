@@ -20,31 +20,38 @@ Add Amazon EC2 to Jenkins clouds
 
 Amazon EC2
 
-#setup aws cli
+# setup aws cli
+
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
 
-#setup kubectl
+# setup kubectl
+
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 chmod +x kubectl
 mkdir -p ~/.local/bin
 mv ./kubectl ~/.local/bin/kubectl
 
-#Fix docker
+# Fix docker
+
 sudo chmod 666 /var/run/docker.sock
 
-#Port forward
+# Port forward
+
 kubectl port-forward svc/frontend 3000:3000
 
-#setup argocd
+# setup argocd
+
 kubectl create namespace argocd
+kubectl create namespace app-argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath=”{.data.password}”
 kubectl port-forward svc/argocd-server -n argocd 8084:443
 
-#Prometheus and Grafana
+# Prometheus and Grafana
+
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 helm repo add stable https://charts.helm.sh/stable
 helm repo update
